@@ -2,7 +2,7 @@ Introduction
 ============
 
 
-.. image:: https://readthedocs.org/projects/adafruit-circuitpython-adafruit-circuitpython-ad569x/badge/?version=latest
+.. image:: https://readthedocs.org/projects/adafruit-circuitpython-ad569x/badge/?version=latest
     :target: https://docs.circuitpython.org/projects/adafruit_circuitpython_ad569x/en/latest/
     :alt: Documentation Status
 
@@ -12,8 +12,8 @@ Introduction
     :alt: Discord
 
 
-.. image:: https://github.com/adafruit/Adafruit_CircuitPython_Adafruit_CircuitPython_AD569x/workflows/Build%20CI/badge.svg
-    :target: https://github.com/adafruit/Adafruit_CircuitPython_Adafruit_CircuitPython_AD569x/actions
+.. image:: https://github.com/adafruit/Adafruit_CircuitPython_AD569x/workflows/Build%20CI/badge.svg
+    :target: https://github.com/adafruit/Adafruit_CircuitPython_AD569x/actions
     :alt: Build Status
 
 
@@ -37,32 +37,25 @@ This is easily achieved by downloading
 or individual libraries can be installed using
 `circup <https://github.com/adafruit/circup>`_.
 
-.. todo:: Describe the Adafruit product this library works with. For PCBs, you can also add the
-image from the assets folder in the PCB's GitHub repo.
-
 `Purchase one from the Adafruit shop <http://www.adafruit.com/products/5811>`_
 
 
 Installing from PyPI
 =====================
-.. note:: This library is not available on PyPI yet. Install documentation is included
-   as a standard element. Stay tuned for PyPI availability!
-
-.. todo:: Remove the above note if PyPI version is/will be available at time of release.
 
 On supported GNU/Linux systems like the Raspberry Pi, you can install the driver locally `from
-PyPI <https://pypi.org/project/adafruit-circuitpython-adafruit-circuitpython-ad569x/>`_.
+PyPI <https://pypi.org/project/adafruit-circuitpython-ad569x/>`_.
 To install for current user:
 
 .. code-block:: shell
 
-    pip3 install adafruit-circuitpython-adafruit-circuitpython-ad569x
+    pip3 install adafruit-circuitpython-ad569x
 
 To install system-wide (this may be required in some cases):
 
 .. code-block:: shell
 
-    sudo pip3 install adafruit-circuitpython-adafruit-circuitpython-ad569x
+    sudo pip3 install adafruit-circuitpython-ad569x
 
 To install in a virtual environment in your current project:
 
@@ -71,9 +64,7 @@ To install in a virtual environment in your current project:
     mkdir project-name && cd project-name
     python3 -m venv .env
     source .env/bin/activate
-    pip3 install adafruit-circuitpython-adafruit-circuitpython-ad569x
-
-
+    pip3 install adafruit-circuitpython-ad569x
 
 Installing to a Connected CircuitPython Device with Circup
 ==========================================================
@@ -101,8 +92,13 @@ Or the following command to update an existing version:
 Usage Example
 =============
 
-.. todo:: Add a quick, simple example. It and other examples should live in the
-examples folder and be included in docs/examples.rst.
+.. code-block:: shell
+	
+	import board
+	import adafruit_ad569x
+	
+	i2c = board.I2C()
+	dac = adafruit_ad569x.Adafruit_AD569x(i2c)
 
 Documentation
 =============
@@ -115,5 +111,5 @@ Contributing
 ============
 
 Contributions are welcome! Please read our `Code of Conduct
-<https://github.com/adafruit/Adafruit_CircuitPython_Adafruit_CircuitPython_AD569x/blob/HEAD/CODE_OF_CONDUCT.md>`_
+<https://github.com/adafruit/Adafruit_CircuitPython_AD569x/blob/HEAD/CODE_OF_CONDUCT.md>`_
 before contributing to help this project stay welcoming.
