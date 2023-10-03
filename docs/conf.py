@@ -46,7 +46,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "Adafruit CircuitPython Adafruit_CircuitPython_AD569x Library"
+project = "Adafruit CircuitPython AD569x Library"
 copyright = "2023 Liz Clark"
 author = "Liz Clark"
 
@@ -128,7 +128,7 @@ html_static_path = ["_static"]
 html_favicon = "_static/favicon.ico"
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "Adafruit_CircuitPython_Adafruit_circuitpython_ad569x_Librarydoc"
+htmlhelp_basename = "Adafruit_CircuitPython_Ad569x_Librarydoc"
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -149,8 +149,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "Adafruit_CircuitPython_Adafruit_CircuitPython_AD569x_Library.tex",
-        "Adafruit CircuitPython Adafruit_CircuitPython_AD569x Library Documentation",
+        "Adafruit_CircuitPython_AD569x_Library.tex",
+        "Adafruit CircuitPython AD569x Library Documentation",
         author,
         "manual",
     ),
@@ -163,8 +163,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "Adafruit_CircuitPython_Adafruit_CircuitPython_AD569x_Library",
-        "Adafruit CircuitPython Adafruit_CircuitPython_AD569x Library Documentation",
+        "Adafruit_CircuitPython_AD569x_Library",
+        "Adafruit CircuitPython AD569x Library Documentation",
         [author],
         1,
     ),
@@ -178,10 +178,10 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "Adafruit_CircuitPython_Adafruit_CircuitPython_AD569x_Library",
-        "Adafruit CircuitPython Adafruit_CircuitPython_AD569x Library Documentation",
+        "Adafruit_CircuitPython_AD569x_Library",
+        "Adafruit CircuitPython AD569x Library Documentation",
         author,
-        "Adafruit_CircuitPython_Adafruit_CircuitPython_AD569x_Library",
+        "Adafruit_CircuitPython_AD569x_Library",
         "One line description of project.",
         "Miscellaneous",
     ),

@@ -3,7 +3,7 @@ Introduction
 
 
 .. image:: https://readthedocs.org/projects/adafruit-circuitpython-ad569x/badge/?version=latest
-    :target: https://docs.circuitpython.org/projects/adafruit_circuitpython_ad569x/en/latest/
+    :target: https://docs.circuitpython.org/projects/ad569x/en/latest/
     :alt: Documentation Status
 
 
@@ -21,7 +21,7 @@ Introduction
     :target: https://github.com/psf/black
     :alt: Code Style: Black
 
-CircuitPython module for the AD5691/2/3 I2C DAC
+CircuitPython driver for the AD5691/2/3 I2C DAC
 
 
 Dependencies
@@ -66,6 +66,8 @@ To install in a virtual environment in your current project:
     source .env/bin/activate
     pip3 install adafruit-circuitpython-ad569x
 
+
+
 Installing to a Connected CircuitPython Device with Circup
 ==========================================================
 
@@ -81,7 +83,7 @@ following command to install:
 
 .. code-block:: shell
 
-    circup install adafruit_circuitpython_ad569x
+    circup install ad569x
 
 Or the following command to update an existing version:
 
@@ -92,7 +94,7 @@ Or the following command to update an existing version:
 Usage Example
 =============
 
-.. code-block:: shell
+.. code-block:: python
 	
 	import board
 	import adafruit_ad569x
@@ -102,7 +104,7 @@ Usage Example
 
 Documentation
 =============
-API documentation for this library can be found on `Read the Docs <https://docs.circuitpython.org/projects/adafruit_circuitpython_ad569x/en/latest/>`_.
+API documentation for this library can be found on `Read the Docs <https://docs.circuitpython.org/projects/ad569x/en/latest/>`_.
 
 For information on building library documentation, please check out
 `this guide <https://learn.adafruit.com/creating-and-sharing-a-circuitpython-library/sharing-our-docs-on-readthedocs#sphinx-5-1>`_.

@@ -24,24 +24,25 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
 
 setup(
     # Adafruit Bundle Information
-    name="adafruit-circuitpython-adafruit-circuitpython-ad569x",
+    name="adafruit-circuitpython-ad569x",
     use_scm_version={
         # This is needed for the PyPI version munging in the Github Actions release.yml
         "git_describe_command": "git describe --tags --long",
         "local_scheme": "no-local-version",
     },
     setup_requires=["setuptools_scm"],
-    description="CircuitPython module for the AD5691/2/3 I2C DAC",
+    description="CircuitPython driver for the AD5691/2/3 I2C DAC",
     long_description=long_description,
     long_description_content_type="text/x-rst",
     # The project's main homepage.
-    url="https://github.com/adafruit/Adafruit_CircuitPython_Adafruit_CircuitPython_AD569x.git",
+    url="https://github.com/adafruit/Adafruit_CircuitPython_AD569x.git",
     # Author details
     author="Adafruit Industries",
     author_email="circuitpython@adafruit.com",
     install_requires=[
         "Adafruit-Blinka",
         "adafruit-circuitpython-busdevice",
+        "n",
     ],
     # Choose your license
     license="MIT",
@@ -55,11 +56,11 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     # What does your project relate to?
-    keywords="adafruit blinka circuitpython micropython adafruit_circuitpython_ad569x dac",
+    keywords="adafruit blinka circuitpython micropython ad569x DAC",
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     # TODO: IF LIBRARY FILES ARE A PACKAGE FOLDER,
     #       CHANGE `py_modules=['...']` TO `packages=['...']`
-    py_modules=["adafruit_adafruit_circuitpython_ad569x"],
+    py_modules=["adafruit_ad569x"],
 )
