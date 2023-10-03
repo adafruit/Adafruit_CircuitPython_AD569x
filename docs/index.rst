@@ -24,14 +24,12 @@ Table of Contents
 .. toctree::
     :caption: Tutorials
 
-.. todo:: Add any Learn guide links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
+	Adafruit AD5693R Breakout Board Learn Guide <https://learn.adafruit.com/adafruit-ad5693r-16-bit-dac-breakout-board>
 
 .. toctree::
     :caption: Related Products
 
-.. todo:: Add any product links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
+	Adafruit AD5693R Breakout Board - 16-Bit DAC with I2C Interface <https://www.adafruit.com/product/5811>
 
 .. toctree::
     :caption: Other Links

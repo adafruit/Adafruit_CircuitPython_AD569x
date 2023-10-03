@@ -7,7 +7,7 @@
 
 # https://chat.openai.com/share/9e1559a0-08be-42b4-87b1-3ae1b1b450c4
 """
-`adafruit_adafruit_circuitpython_ad569x`
+`adafruit_ad569x`
 ================================================================================
 
 CircuitPython module for the AD5691/2/3 I2C DAC
