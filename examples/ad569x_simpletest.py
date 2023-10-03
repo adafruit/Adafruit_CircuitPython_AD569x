@@ -21,5 +21,4 @@ while True:
     for i in range(LENGTH):
         value[i] = int(math.sin(math.pi * 2 * i / LENGTH) * ((2**15) - 1) + 2**15)
         # write and update DAC
-        if not dac.write_update_dac(value[i]):
-            print("Failed to update DAC.")
+        dac.write_update_dac(value[i])
