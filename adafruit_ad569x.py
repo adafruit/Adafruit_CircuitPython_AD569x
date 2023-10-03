@@ -32,7 +32,6 @@ Implementation Notes
 
 """
 
-import time
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
 
@@ -70,14 +69,14 @@ class Adafruit_AD569x:
         """
         self.i2c_device = I2CDevice(i2c, address)
         self._address = address
-        time.sleep(1)
+
         try:
             self.reset()
             self.set_mode(_NORMAL_MODE, True, False)
         except OSError as exception:
             raise OSError("Failed to set mode for AD569x") from exception
 
-    def set_mode(self, new_mode: int, enable_ref: bool, gain2x: bool) -> bool:
+    def set_mode(self, new_mode: int, enable_ref: bool, gain2x: bool) -> None:
         """
         Set the operating mode, reference, and gain.
         """
@@ -93,11 +92,9 @@ class Adafruit_AD569x:
         buffer = bytearray([command, high_byte, low_byte])
 
         with self.i2c_device as i2c:
-            print(buffer)
             i2c.write(buffer)
-        return True
 
-    def write_update_dac(self, value: int) -> bool:
+    def write_update_dac(self, value: int) -> None:
         """
         Write a 16-bit value to the input register and update the DAC register.
         """
@@ -109,9 +106,8 @@ class Adafruit_AD569x:
 
         with self.i2c_device as i2c:
             i2c.write(buffer)
-        return True
 
-    def write_dac(self, value: int) -> bool:
+    def write_dac(self, value: int) -> None:
         """
         Write a 16-bit value to the DAC input register.
         """
@@ -123,9 +119,8 @@ class Adafruit_AD569x:
 
         with self.i2c_device as i2c:
             i2c.write(buffer)
-        return True
 
-    def update_dac(self) -> bool:
+    def update_dac(self) -> None:
         """
         Update the DAC register from the input register.
         """
@@ -134,7 +129,6 @@ class Adafruit_AD569x:
 
         with self.i2c_device as i2c:
             i2c.write(buffer)
-        return True
 
     def reset(self) -> None:
         """
@@ -144,5 +138,4 @@ class Adafruit_AD569x:
         buffer = bytearray([command, 0x80, 0x00])
 
         with self.i2c_device as i2c:
-            print(buffer)
             i2c.write(buffer, end=False)
