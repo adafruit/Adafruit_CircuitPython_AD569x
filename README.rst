@@ -95,10 +95,10 @@ Usage Example
 =============
 
 .. code-block:: python
-	
+
 	import board
 	import adafruit_ad569x
-	
+
 	i2c = board.I2C()
 	dac = adafruit_ad569x.Adafruit_AD569x(i2c)
 
