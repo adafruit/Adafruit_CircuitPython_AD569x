@@ -83,7 +83,7 @@ class Adafruit_AD569x:
         buffer = bytearray([command, (data >> 8) & 0xFF, data & 0xFF])
 
         with self.i2c_device as i2c:
-            if command == (_WRITE_CONTROL):
+            if command == _WRITE_CONTROL:
                 i2c.write(buffer, end=False)
             else:
                 i2c.write(buffer)
