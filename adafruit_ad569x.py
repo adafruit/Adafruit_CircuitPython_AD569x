@@ -76,66 +76,49 @@ class Adafruit_AD569x:
         except OSError as exception:
             raise OSError("Failed to set mode for AD569x") from exception
 
+    def _send_command(self, command: int, data: int) -> None:
+        """
+        Internal function to send bytearray
+        """
+        buffer = bytearray([command, (data >> 8) & 0xFF, data & 0xFF])
+
+        with self.i2c_device as i2c:
+            if command == (_WRITE_CONTROL):
+                i2c.write(buffer, end=False)
+            else:
+                i2c.write(buffer)
+
     def set_mode(self, new_mode: int, enable_ref: bool, gain2x: bool) -> None:
         """
         Set the operating mode, reference, and gain.
         """
-        command = _WRITE_CONTROL
         data = 0x0000
         data |= new_mode << 13
         data |= not enable_ref << 12
         data |= gain2x << 11
 
-        high_byte = (data >> 8) & 0xFF
-        low_byte = data & 0xFF
-
-        buffer = bytearray([command, high_byte, low_byte])
-
-        with self.i2c_device as i2c:
-            i2c.write(buffer)
+        self._send_command(_WRITE_CONTROL, data)
 
     def write_update_dac(self, value: int) -> None:
         """
         Write a 16-bit value to the input register and update the DAC register.
         """
-        command = _WRITE_DAC_AND_INPUT
-        high_byte = (value >> 8) & 0xFF
-        low_byte = value & 0xFF
-
-        buffer = bytearray([command, high_byte, low_byte])
-
-        with self.i2c_device as i2c:
-            i2c.write(buffer)
+        self._send_command(_WRITE_DAC_AND_INPUT, value)
 
     def write_dac(self, value: int) -> None:
         """
         Write a 16-bit value to the DAC input register.
         """
-        command = _WRITE_INPUT
-        high_byte = (value >> 8) & 0xFF
-        low_byte = value & 0xFF
-
-        buffer = bytearray([command, high_byte, low_byte])
-
-        with self.i2c_device as i2c:
-            i2c.write(buffer)
+        self._send_command(_WRITE_INPUT, value)
 
     def update_dac(self) -> None:
         """
         Update the DAC register from the input register.
         """
-        command = _UPDATE_DAC
-        buffer = bytearray([command, 0x00, 0x00])
-
-        with self.i2c_device as i2c:
-            i2c.write(buffer)
+        self._send_command(_UPDATE_DAC, 0x0000)
 
     def reset(self) -> None:
         """
         Soft-reset the AD569x chip.
         """
-        command = _WRITE_CONTROL
-        buffer = bytearray([command, 0x80, 0x00])
-
-        with self.i2c_device as i2c:
-            i2c.write(buffer, end=False)
+        self._send_command(_WRITE_CONTROL, 0x8000)
