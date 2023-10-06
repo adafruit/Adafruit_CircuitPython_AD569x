@@ -29,11 +29,13 @@ Implementation Notes
   https://circuitpython.org/downloads
 
 * Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
+* Adafruit's Register library: https://github.com/adafruit/Adafruit_CircuitPython_Register
 
 """
 
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
+from adafruit_register.i2c_bits import RWBits
 
 try:
     import typing  # pylint: disable=unused-import
@@ -58,15 +60,10 @@ class Adafruit_AD569x:
     OUTPUT_1K_IMPEDANCE = const(0x01)
     OUTPUT_100K_IMPEDANCE = const(0x02)
     OUTPUT_TRISTATE = const(0x03)
+    GAIN_1X = const(0)
+    GAIN_2X = const(1)
 
-    def __init__(  # pylint: disable=too-many-arguments
-        self,
-        i2c: I2C,
-        address: int = 0x4C,
-        initial_mode: int = NORMAL_MODE,
-        enable_ref: bool = True,
-        gain2x: bool = False,
-    ) -> None:
+    def __init__(self, i2c: I2C, address: int = 0x4C) -> None:
         """
         Initialize the AD569x device.
 
@@ -76,16 +73,16 @@ class Adafruit_AD569x:
 
         :param i2c: The I2C bus.
         :param address: The I2C address of the device. Defaults to 0x4C.
-        :param initial_mode: The initial operating mode. Defaults to NORMAL_MODE.
-        :param enable_ref: Whether to enable the reference. Defaults to True.
-        :param gain2x: Whether to set the gain to 2xVref. Defaults to False.
         """
         self.i2c_device = I2CDevice(i2c, address)
         self._address = address
+        self._control_register = RWBits(2, _WRITE_CONTROL, 0)
 
         try:
             self.reset()
-            self.mode = (initial_mode, enable_ref, gain2x)
+            self.mode = self.NORMAL_MODE
+            self.enable_ref = True
+            self.gain = self.GAIN_1X
         except OSError as error:
             raise OSError(f"Failed to initialize AD569x, {error}") from error
 
@@ -128,44 +125,70 @@ class Adafruit_AD569x:
             raise Exception(f"Error sending command: {error}") from error
 
     @property
-    def mode(self) -> typing.Tuple[int, bool, bool]:
+    def mode(self) -> int:
         """
-        Set the operating mode, reference, and gain for the AD569x chip.
+        Set the operating mode for the AD569x chip.
 
-        :param new_values: A tuple containing new operating mode, enable_ref, and gain2x.
+        :param value: An int containing new operating mode.
         """
         return self.mode
 
     @mode.setter
-    def mode(self, new_values: typing.Tuple[int, bool, bool]) -> None:
-        new_mode, enable_ref, gain2x = new_values
+    def mode(self, value: int) -> None:
+        self._control_register = value << 13
 
-        # Prepare the command byte
-        command = _WRITE_CONTROL
+    @property
+    def enable_ref(self) -> bool:
+        """
+        Enable the reference voltage for the AD569x chip.
 
-        # Prepare the high and low data bytes
-        data = 0x0000
-        data |= new_mode << 13  # Set D14 and D13 for the operating mode
-        data |= not enable_ref << 12  # Set D12 for enable_ref
-        data |= gain2x << 11  # Set D11 for the gain
+        :param value: A bool to enable the reference voltage.
+        """
+        return not bool(self.enable_ref)
 
-        self._send_write_command(command, data)
+    @enable_ref.setter
+    def enable_ref(self, value: bool) -> None:
+        self._control_register = value << 12
 
-    def set_value(self, value: int) -> None:
+    @property
+    def gain(self) -> bool:
+        """
+        Set the gain for the AD569x chip.
+
+        :param value: A bool to choose 1X or 2X gain.
+        """
+        return bool(self.gain)
+
+    @gain.setter
+    def gain(self, value: bool) -> None:
+        self._control_register = value << 11
+
+    @property
+    def set_value(self) -> int:
         """
         Write a 16-bit value to the input register and update the DAC register.
 
         This property writes a 16-bit value to the input register and then updates
         the DAC register of the AD569x chip in a single operation.
         """
+        return self.set_value
+
+    @set_value.setter
+    def set_value(self, value: int) -> None:
+        # Use the internal _send_command function
         self._send_command(_WRITE_DAC_AND_INPUT, value)
 
-    def write_dac(self, value: int) -> None:
+    @property
+    def write_dac(self) -> int:
         """
         Write a 16-bit value to the input register.
 
         This function writes a 16-bit value to the input register of the AD569x chip.
         """
+        return self.write_dac
+
+    @write_dac.setter
+    def write_dac(self, value: int) -> None:
         # Use the internal _send_command function
         self._send_command(_WRITE_INPUT, value)
 

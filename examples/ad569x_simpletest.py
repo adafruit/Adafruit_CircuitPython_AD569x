@@ -21,4 +21,4 @@ while True:
     for i in range(LENGTH):
         value[i] = int(math.sin(math.pi * 2 * i / LENGTH) * ((2**15) - 1) + 2**15)
         # write and update DAC
-        dac.set_value(value[i])
+        dac.set_value = value[i]
