@@ -76,7 +76,11 @@ class Adafruit_AD569x:
         """
         self.i2c_device = I2CDevice(i2c, address)
         self._address = address
-        self._control_register = RWBits(2, _WRITE_CONTROL, 0)
+
+        self._mode_command = RWBits(2, _WRITE_CONTROL, 13, 16)
+        self._ref_command = RWBits(1, _WRITE_CONTROL, 12, 16)
+        self._gain_command = RWBits(1, _WRITE_CONTROL, 11, 16)
+        self._write_command = RWBits(2, _WRITE_CONTROL, 0, 16)
 
         try:
             self.reset()
@@ -105,27 +109,8 @@ class Adafruit_AD569x:
         except Exception as error:
             raise Exception(f"Error sending command: {error}") from error
 
-    def _send_write_command(self, command: int, data: int) -> None:
-        """
-        Send a command and data to the I2C device without sending a stop condition.
-
-        This internal function prepares a 3-byte buffer containing the command and data,
-        and writes it to the I2C device without sending a stop condition.
-
-        :param command: The command byte to send.
-        :param data: The 16-bit data to send.
-        """
-        try:
-            high_byte = (data >> 8) & 0xFF
-            low_byte = data & 0xFF
-            buffer = bytearray([command, high_byte, low_byte])
-            with self.i2c_device as i2c:
-                i2c.write(buffer, end=False)
-        except Exception as error:
-            raise Exception(f"Error sending command: {error}") from error
-
     @property
-    def mode(self) -> int:
+    def mode(self):
         """
         Set the operating mode for the AD569x chip.
 
@@ -134,11 +119,11 @@ class Adafruit_AD569x:
         return self.mode
 
     @mode.setter
-    def mode(self, value: int) -> None:
-        self._control_register = value << 13
+    def mode(self, value: int):
+        self._mode_command = value
 
     @property
-    def enable_ref(self) -> bool:
+    def enable_ref(self):
         """
         Enable the reference voltage for the AD569x chip.
 
@@ -147,11 +132,11 @@ class Adafruit_AD569x:
         return not bool(self.enable_ref)
 
     @enable_ref.setter
-    def enable_ref(self, value: bool) -> None:
-        self._control_register = value << 12
+    def enable_ref(self, value: bool):
+        self._ref_command = value
 
     @property
-    def gain(self) -> bool:
+    def gain(self):
         """
         Set the gain for the AD569x chip.
 
@@ -160,35 +145,34 @@ class Adafruit_AD569x:
         return bool(self.gain)
 
     @gain.setter
-    def gain(self, value: bool) -> None:
-        self._control_register = value << 11
+    def gain(self, value: bool):
+        self._gain_command = value
 
     @property
-    def set_value(self) -> int:
+    def value(self) -> int:
         """
         Write a 16-bit value to the input register and update the DAC register.
 
         This property writes a 16-bit value to the input register and then updates
         the DAC register of the AD569x chip in a single operation.
         """
-        return self.set_value
+        return self.value
 
-    @set_value.setter
-    def set_value(self, value: int) -> None:
-        # Use the internal _send_command function
+    @value.setter
+    def value(self, value: int) -> None:
         self._send_command(_WRITE_DAC_AND_INPUT, value)
 
     @property
-    def write_dac(self) -> int:
+    def dac(self) -> int:
         """
         Write a 16-bit value to the input register.
 
         This function writes a 16-bit value to the input register of the AD569x chip.
         """
-        return self.write_dac
+        return self.dac
 
-    @write_dac.setter
-    def write_dac(self, value: int) -> None:
+    @dac.setter
+    def dac(self, value: int) -> None:
         # Use the internal _send_command function
         self._send_command(_WRITE_INPUT, value)
 
@@ -210,5 +194,4 @@ class Adafruit_AD569x:
         to perform a reset operation. Resets the DAC to zero-scale and
         resets the input, DAC, and control registers to their default values.
         """
-        # Use the internal _send_command function with 0x8000 as data
-        self._send_write_command(_WRITE_CONTROL, 0x8000)
+        self._write_command = 0x8000
