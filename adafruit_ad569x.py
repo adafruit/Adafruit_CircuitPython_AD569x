@@ -77,10 +77,10 @@ class Adafruit_AD569x:
         self.i2c_device = I2CDevice(i2c, address)
         self._address = address
 
-        self._mode_command = RWBits(2, _WRITE_CONTROL, 13, 2)
+        self._reset_command = RWBits(1, _WRITE_CONTROL, 15, 2)
+        self._mode_command = RWBits(1, _WRITE_CONTROL, 13, 2)
         self._ref_command = RWBits(1, _WRITE_CONTROL, 12, 2)
-        self._gain_command = RWBits(1, _WRITE_CONTROL, 11, 2)
-        self._reset_command = RWBits(2, _WRITE_CONTROL, 0, 2)
+        self._gain_command = RWBits(2, _WRITE_CONTROL, 11, 2)
 
         try:
             self.reset()
@@ -110,42 +110,42 @@ class Adafruit_AD569x:
             raise Exception(f"Error sending command: {error}") from error
 
     @property
-    def mode(self):
+    def mode(self) -> int:
         """
         Set the operating mode for the AD569x chip.
 
         :param value: An int containing new operating mode.
         """
-        return self.mode
+        return self._mode_command
 
     @mode.setter
-    def mode(self, value: int):
+    def mode(self, value: int) -> None:
         self._mode_command = value
 
     @property
-    def ref_enabled(self):
+    def ref_enabled(self) -> bool:
         """
         Enable the reference voltage for the AD569x chip.
 
         :param value: A bool to enable the reference voltage.
         """
-        return not bool(self.ref_enabled)
+        return not bool(self._ref_command)
 
     @ref_enabled.setter
-    def ref_enabled(self, value: bool):
+    def ref_enabled(self, value: bool) -> None:
         self._ref_command = value
 
     @property
-    def gain(self):
+    def gain(self) -> bool:
         """
         Set the gain for the AD569x chip.
 
         :param value: A bool to choose 1X or 2X gain.
         """
-        return bool(self.gain)
+        return bool(self._gain_command)
 
     @gain.setter
-    def gain(self, value: bool):
+    def gain(self, value: bool) -> None:
         self._gain_command = value
 
     @property
