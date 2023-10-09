@@ -77,10 +77,10 @@ class Adafruit_AD569x:
         self.i2c_device = I2CDevice(i2c, address)
         self._address = address
 
-        self._mode_command = RWBits(2, _WRITE_CONTROL, 13, 16)
-        self._ref_command = RWBits(1, _WRITE_CONTROL, 12, 16)
-        self._gain_command = RWBits(1, _WRITE_CONTROL, 11, 16)
-        self._write_command = RWBits(2, _WRITE_CONTROL, 0, 16)
+        self._mode_command = RWBits(2, _WRITE_CONTROL, 13, 2)
+        self._ref_command = RWBits(1, _WRITE_CONTROL, 12, 2)
+        self._gain_command = RWBits(1, _WRITE_CONTROL, 11, 2)
+        self._reset_command = RWBits(2, _WRITE_CONTROL, 0, 2)
 
         try:
             self.reset()
@@ -123,16 +123,16 @@ class Adafruit_AD569x:
         self._mode_command = value
 
     @property
-    def enable_ref(self):
+    def ref_enabled(self):
         """
         Enable the reference voltage for the AD569x chip.
 
         :param value: A bool to enable the reference voltage.
         """
-        return not bool(self.enable_ref)
+        return not bool(self.ref_enabled)
 
-    @enable_ref.setter
-    def enable_ref(self, value: bool):
+    @ref_enabled.setter
+    def ref_enabled(self, value: bool):
         self._ref_command = value
 
     @property
@@ -194,4 +194,4 @@ class Adafruit_AD569x:
         to perform a reset operation. Resets the DAC to zero-scale and
         resets the input, DAC, and control registers to their default values.
         """
-        self._write_command = 0x8000
+        self._reset_command = 0x8000
