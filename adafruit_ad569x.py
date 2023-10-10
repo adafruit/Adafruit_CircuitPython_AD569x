@@ -78,9 +78,9 @@ class Adafruit_AD569x:
         self._address = address
 
         self._reset_command = RWBits(1, _WRITE_CONTROL, 15, 2)
-        self._mode_command = RWBits(1, _WRITE_CONTROL, 13, 2)
+        self._mode_command = RWBits(2, _WRITE_CONTROL, 13, 2)
         self._ref_command = RWBits(1, _WRITE_CONTROL, 12, 2)
-        self._gain_command = RWBits(2, _WRITE_CONTROL, 11, 2)
+        self._gain_command = RWBits(1, _WRITE_CONTROL, 11, 2)
 
         try:
             self.reset()

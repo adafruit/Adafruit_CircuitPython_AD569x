@@ -5,9 +5,10 @@
 
 import math
 import board
+import busio
 import adafruit_ad569x
 
-i2c = board.I2C()
+i2c = busio.I2C(board.SCL, board.SDA, frequency=800_000)
 
 # Initialize AD569x
 dac = adafruit_ad569x.Adafruit_AD569x(i2c)
