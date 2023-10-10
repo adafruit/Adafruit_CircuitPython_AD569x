@@ -194,4 +194,4 @@ class Adafruit_AD569x:
         to perform a reset operation. Resets the DAC to zero-scale and
         resets the input, DAC, and control registers to their default values.
         """
-        self._reset_command = 0x8000
+        self._reset_command = 1
