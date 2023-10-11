@@ -52,16 +52,16 @@ _UPDATE_DAC = const(0x20)
 _WRITE_DAC_AND_INPUT = const(0x30)
 _WRITE_CONTROL = const(0x40)
 
+NORMAL_MODE = const(0x00)
+OUTPUT_1K_IMPEDANCE = const(0x01)
+OUTPUT_100K_IMPEDANCE = const(0x02)
+OUTPUT_TRISTATE = const(0x03)
+GAIN_1X = const(0)
+GAIN_2X = const(1)
+
 
 class Adafruit_AD569x:
     """Class which provides interface to AD569x Dac."""
-
-    NORMAL_MODE = const(0x00)
-    OUTPUT_1K_IMPEDANCE = const(0x01)
-    OUTPUT_100K_IMPEDANCE = const(0x02)
-    OUTPUT_TRISTATE = const(0x03)
-    GAIN_1X = const(0)
-    GAIN_2X = const(1)
 
     def __init__(self, i2c: I2C, address: int = 0x4C) -> None:
         """
@@ -84,9 +84,9 @@ class Adafruit_AD569x:
 
         try:
             self.reset()
-            self.mode = self.NORMAL_MODE
+            self.mode = NORMAL_MODE
             self.enable_ref = True
-            self.gain = self.GAIN_1X
+            self.gain = GAIN_1X
         except OSError as error:
             raise OSError(f"Failed to initialize AD569x, {error}") from error
 
