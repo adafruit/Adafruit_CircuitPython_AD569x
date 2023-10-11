@@ -6,6 +6,7 @@
 
 import os
 import sys
+import datetime
 
 sys.path.insert(0, os.path.abspath(".."))
 
@@ -18,19 +19,26 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinxcontrib.jquery",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.viewcode",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.todo",
 ]
 
 # TODO: Please Read!
 # Uncomment the below if you use native CircuitPython modules such as
 # digitalio, micropython and busio. List the modules you use. Without it, the
 # autodoc module docs will fail to generate with a warning.
-autodoc_mock_imports = ["micropython", "busio", "adafruit_bus_device"]
+autodoc_mock_imports = [
+    "micropython",
+    "busio",
+    "adafruit_bus_device",
+    "adafruit_register",
+]
 
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "BusDevice": ("https://docs.circuitpython.org/projects/busdevice/en/latest/", None),
+    "Register": ("https://docs.circuitpython.org/projects/register/en/latest/", None),
     "CircuitPython": ("https://docs.circuitpython.org/en/latest/", None),
 }
 
@@ -47,7 +55,14 @@ master_doc = "index"
 
 # General information about the project.
 project = "Adafruit CircuitPython AD569x Library"
-copyright = "2023 Liz Clark"
+creation_year = "2023"
+current_year = str(datetime.datetime.now().year)
+year_duration = (
+    current_year
+    if current_year == creation_year
+    else creation_year + " - " + current_year
+)
+copyright = year_duration + " Liz Clark"
 author = "Liz Clark"
 
 # The version info for the project you're documenting, acts as replacement for
