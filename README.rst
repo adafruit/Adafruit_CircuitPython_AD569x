@@ -30,6 +30,7 @@ This driver depends on:
 
 * `Adafruit CircuitPython <https://github.com/adafruit/circuitpython>`_
 * `Bus Device <https://github.com/adafruit/Adafruit_CircuitPython_BusDevice>`_
+* `Register <https://github.com/adafruit/Adafruit_CircuitPython_Register>`_
 
 Please ensure all dependencies are available on the CircuitPython filesystem.
 This is easily achieved by downloading
@@ -101,6 +102,15 @@ Usage Example
 
 	i2c = board.I2C()
 	dac = adafruit_ad569x.Adafruit_AD569x(i2c)
+
+    # length of the sine wave
+	LENGTH = 100
+	# sine wave values written to the DAC
+	value = [int(math.sin(math.pi * 2 * i / LENGTH) * ((2**15) - 1) + 2**15) for i in range(LENGTH)]
+
+	while True:
+		for v in value:
+			dac.value = v
 
 Documentation
 =============
