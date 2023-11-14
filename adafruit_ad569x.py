@@ -50,6 +50,7 @@ _WRITE_DAC_AND_INPUT = const(0x30)
 _WRITE_CONTROL = const(0x40)
 
 
+# pylint: disable=broad-exception-raised
 class Adafruit_AD569x:
     """Class which provides interface to AD569x Dac."""
 
@@ -99,7 +100,7 @@ class Adafruit_AD569x:
             try:
                 with self.i2c_device as i2c:
                     i2c.write(buffer)
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
                 with self.i2c_device as i2c:
                     i2c.write(buffer, end=False)
         except Exception as error:
