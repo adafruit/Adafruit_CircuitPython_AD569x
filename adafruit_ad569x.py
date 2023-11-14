@@ -66,13 +66,22 @@ class Adafruit_AD569x:
         :param address: The I2C address of the device. Defaults to 0x4C.
         """
         self.i2c_device = I2CDevice(i2c, address)
-        """
-        Mode options
-        """
         self.normal_mode = const(0x00)
+        """
+        Normal mode
+        """
         self.output_1k_impedance = const(0x01)
+        """
+        1K impedance mode
+        """
         self.output_100k_impedance = const(0x02)
+        """
+        100K impedance mode
+        """
         self.output_tristate = const(0x03)
+        """
+        Tri-state mode
+        """
 
         try:
             self.reset()
