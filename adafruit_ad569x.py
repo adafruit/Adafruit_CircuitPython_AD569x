@@ -35,7 +35,6 @@ Implementation Notes
 
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
-from adafruit_register.i2c_bits import RWBits
 
 try:
     import typing  # pylint: disable=unused-import
@@ -47,19 +46,11 @@ __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_AD569x.git"
 
 _NOP = const(0x00)
-_WRITE_INPUT = const(0x10)
-_UPDATE_DAC = const(0x20)
 _WRITE_DAC_AND_INPUT = const(0x30)
 _WRITE_CONTROL = const(0x40)
 
-NORMAL_MODE = const(0x00)
-OUTPUT_1K_IMPEDANCE = const(0x01)
-OUTPUT_100K_IMPEDANCE = const(0x02)
-OUTPUT_TRISTATE = const(0x03)
-GAIN_1X = const(0)
-GAIN_2X = const(1)
 
-
+# pylint: disable=broad-exception-raised
 class Adafruit_AD569x:
     """Class which provides interface to AD569x Dac."""
 
@@ -75,18 +66,20 @@ class Adafruit_AD569x:
         :param address: The I2C address of the device. Defaults to 0x4C.
         """
         self.i2c_device = I2CDevice(i2c, address)
-        self._address = address
-
-        self._reset_command = RWBits(1, _WRITE_CONTROL, 15, 2)
-        self._mode_command = RWBits(2, _WRITE_CONTROL, 13, 2)
-        self._ref_command = RWBits(1, _WRITE_CONTROL, 12, 2)
-        self._gain_command = RWBits(1, _WRITE_CONTROL, 11, 2)
+        """
+        Mode options
+        """
+        self.normal_mode = const(0x00)
+        self.output_1k_impedance = const(0x01)
+        self.output_100k_impedance = const(0x02)
+        self.output_tristate = const(0x03)
 
         try:
             self.reset()
-            self.mode = NORMAL_MODE
-            self.enable_ref = True
-            self.gain = GAIN_1X
+            self._mode = self.normal_mode
+            self._internal_reference = True
+            self._gain = False
+            self._update_control_register()
         except OSError as error:
             raise OSError(f"Failed to initialize AD569x, {error}") from error
 
@@ -104,54 +97,76 @@ class Adafruit_AD569x:
             high_byte = (data >> 8) & 0xFF
             low_byte = data & 0xFF
             buffer = bytearray([command, high_byte, low_byte])
-            with self.i2c_device as i2c:
-                i2c.write(buffer)
+            try:
+                with self.i2c_device as i2c:
+                    i2c.write(buffer)
+            except Exception:  # pylint: disable=broad-exception-caught
+                with self.i2c_device as i2c:
+                    i2c.write(buffer, end=False)
         except Exception as error:
             raise Exception(f"Error sending command: {error}") from error
 
+    def _update_control_register(self):
+        data = 0x0000
+        data |= self._mode << 13
+        data |= not self._internal_reference << 12
+        data |= self._gain << 11
+        self._send_command(_WRITE_CONTROL, data)
+
     @property
-    def mode(self) -> int:
+    def mode(self):
         """
-        Set the operating mode for the AD569x chip.
+        Operating mode for the AD569x chip.
 
         :param value: An int containing new operating mode.
         """
-        return self._mode_command
+        return self._mode
 
     @mode.setter
-    def mode(self, value: int) -> None:
-        self._mode_command = value
+    def mode(self, new_mode):
+        if new_mode not in [0, 1, 2, 3]:
+            raise ValueError(
+                "Mode must be normal_mode, output_1k_impedance,"
+                + "output_100k_impedance or output_tristate"
+            )
+        self._mode = new_mode
+        self.reset()
+        self._update_control_register()
 
     @property
-    def ref_enabled(self) -> bool:
+    def internal_reference(self):
         """
-        Enable the reference voltage for the AD569x chip.
+        Internal reference voltage for the AD569x chip.
 
-        :param value: A bool to enable the reference voltage.
+        :param value: A bool to enable the internal reference voltage.
         """
-        return not bool(self._ref_command)
+        return self._internal_reference
 
-    @ref_enabled.setter
-    def ref_enabled(self, value: bool) -> None:
-        self._ref_command = value
+    @internal_reference.setter
+    def internal_reference(self, value):
+        self._internal_reference = value
+        self.reset()
+        self._update_control_register()
 
     @property
-    def gain(self) -> bool:
+    def gain(self):
         """
-        Set the gain for the AD569x chip.
+        Gain for the AD569x chip.
 
         :param value: A bool to choose 1X or 2X gain.
         """
-        return bool(self._gain_command)
+        return self._gain
 
     @gain.setter
-    def gain(self, value: bool) -> None:
-        self._gain_command = value
+    def gain(self, value):
+        self._gain = value
+        self.reset()
+        self._update_control_register()
 
     @property
     def value(self) -> int:
         """
-        Write a 16-bit value to the input register and update the DAC register.
+        16-bit value to the input register and update the DAC register.
 
         This property writes a 16-bit value to the input register and then updates
         the DAC register of the AD569x chip in a single operation.
@@ -159,39 +174,15 @@ class Adafruit_AD569x:
         return self.value
 
     @value.setter
-    def value(self, value: int) -> None:
-        self._send_command(_WRITE_DAC_AND_INPUT, value)
+    def value(self, val: int) -> None:
+        self._send_command(_WRITE_DAC_AND_INPUT, val)
 
-    @property
-    def dac(self) -> int:
-        """
-        Write a 16-bit value to the input register.
-
-        This function writes a 16-bit value to the input register of the AD569x chip.
-        """
-        return self.dac
-
-    @dac.setter
-    def dac(self, value: int) -> None:
-        # Use the internal _send_command function
-        self._send_command(_WRITE_INPUT, value)
-
-    def update_dac(self) -> None:
-        """
-        Update the DAC register from the input register.
-
-        This function sends the UPDATE_DAC command to the AD569x chip to update
-        the DAC register based on the value stored in the input register.
-        """
-        # Use the internal _send_command function with 0x0000 as data
-        self._send_command(_UPDATE_DAC, 0x0000)
-
-    def reset(self) -> None:
+    def reset(self):
         """
         Soft-reset the AD569x chip.
-
-        This function writes 0x8000 to the control register of the AD569x chip
-        to perform a reset operation. Resets the DAC to zero-scale and
-        resets the input, DAC, and control registers to their default values.
         """
-        self._reset_command = 1
+        reset_command = 0x8000
+        try:
+            self._send_command(_WRITE_CONTROL, reset_command)
+        except Exception as error:
+            raise Exception(f"Error during reset: {error}") from error
