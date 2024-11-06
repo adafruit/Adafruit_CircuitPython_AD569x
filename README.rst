@@ -83,7 +83,7 @@ following command to install:
 
 .. code-block:: shell
 
-    circup install adafruit--circuitpython-ad569x
+    circup install adafruit_ad569x
 
 Or the following command to update an existing version:
 
@@ -96,20 +96,20 @@ Usage Example
 
 .. code-block:: python
 
-	import board
-	import adafruit_ad569x
+    import board
+    import adafruit_ad569x
 
-	i2c = board.I2C()
-	dac = adafruit_ad569x.Adafruit_AD569x(i2c)
+    i2c = board.I2C()
+    dac = adafruit_ad569x.Adafruit_AD569x(i2c)
 
     # length of the sine wave
-	LENGTH = 100
-	# sine wave values written to the DAC
-	value = [int(math.sin(math.pi * 2 * i / LENGTH) * ((2**15) - 1) + 2**15) for i in range(LENGTH)]
+    LENGTH = 100
+    # sine wave values written to the DAC
+    value = [int(math.sin(math.pi * 2 * i / LENGTH) * ((2**15) - 1) + 2**15) for i in range(LENGTH)]
 
-	while True:
-		for v in value:
-			dac.value = v
+    while True:
+        for v in value:
+            dac.value = v
 
 Documentation
 =============
