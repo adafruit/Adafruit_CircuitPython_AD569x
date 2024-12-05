@@ -33,6 +33,7 @@ Implementation Notes
 
 """
 
+import time
 from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
 
@@ -190,8 +191,12 @@ class Adafruit_AD569x:
         """
         Soft-reset the AD569x chip.
         """
-        reset_command = 0x8000
+        buffer = bytearray([_WRITE_CONTROL, 0x80, 0x00])
         try:
-            self._send_command(_WRITE_CONTROL, reset_command)
-        except Exception as error:
-            raise Exception(f"Error during reset: {error}") from error
+            with self.i2c_device as i2c:
+                i2c.write(buffer, end=False)
+        except OSError:
+            pass
+            # print(f"Reset may have triggered a NAK, continuing..")
+        # stabilize after reset
+        time.sleep(0.01)
