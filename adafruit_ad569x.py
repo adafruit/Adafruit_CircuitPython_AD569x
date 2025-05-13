@@ -34,11 +34,13 @@ Implementation Notes
 """
 
 import time
-from micropython import const
+
 from adafruit_bus_device.i2c_device import I2CDevice
+from micropython import const
 
 try:
-    import typing  # pylint: disable=unused-import
+    import typing
+
     from busio import I2C
 except ImportError:
     pass
@@ -51,7 +53,6 @@ _WRITE_DAC_AND_INPUT = const(0x30)
 _WRITE_CONTROL = const(0x40)
 
 
-# pylint: disable=broad-exception-raised
 class Adafruit_AD569x:
     """Class which provides interface to AD569x Dac."""
 
@@ -110,7 +111,7 @@ class Adafruit_AD569x:
             try:
                 with self.i2c_device as i2c:
                     i2c.write(buffer)
-            except Exception:  # pylint: disable=broad-exception-caught
+            except Exception:
                 with self.i2c_device as i2c:
                     i2c.write(buffer, end=False)
         except Exception as error:
@@ -134,7 +135,7 @@ class Adafruit_AD569x:
 
     @mode.setter
     def mode(self, new_mode):
-        if new_mode not in [0, 1, 2, 3]:
+        if new_mode not in {0, 1, 2, 3}:
             raise ValueError(
                 "Mode must be normal_mode, output_1k_impedance,"
                 + "output_100k_impedance or output_tristate"
